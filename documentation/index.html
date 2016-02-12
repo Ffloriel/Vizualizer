@@ -32,16 +32,18 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/js/vizualizer.es6.js~Vizualizer.html">Vizualizer</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-interface">I</span><span data-ice="name"><span><a href="class/js/effectVizualizer.es6.js~EffectVizualizer.html">EffectVizualizer</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/vizualizer.es6.js~Vizualizer.html">Vizualizer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-interface">I</span><span data-ice="name"><span><a href="class/src/effectVizualizer.es6.js~EffectVizualizer.html">EffectVizualizer</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="vizualizer-js">Vizualizer.js</h1>
 <p>Vizualizer.js is a small javascript library to simplify the creation of audio visualisation in the web browser. It uses the Web Audio API.</p>
+<h2 id="documentation">Documentation</h2>
+<p>Documentation available <a href="#">here</a>.</p>
 <h2 id="demo">Demo</h2>
-<p>You can found a demo of the vizualizer <a href="http://www.google.fr/">here</a>.</p>
+<p>You can found a demo of the vizualizer <a href="#">here</a>.</p>
 <h2 id="usage">Usage</h2>
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;audio src=&quot;audio.mp3&quot; id=&quot;audio&quot; controls&gt;&lt;/audio&gt;
 &lt;script src=&quot;vizualizer.min.js&quot;&gt;&lt;/script&gt;</code>
@@ -55,6 +57,8 @@ var vizualizerElement = Vizualizer.withElement(el, 1024);
 var url = &quot;audio.mp3&quot;;
 var vizualizerMedia = Vizualizer.withMedia(url, 1024);</code>
 </code></pre>
+<p>TODO: ArrayBuffer &amp; context</p>
+<h3 id="add-remove-and-change-an-effect">Add, remove and change an effect</h3>
 <h3 id="start-and-stop-the-visualisation">Start and Stop the visualisation</h3>
 <pre><code class="lang-javascript"><code class="source-code prettyprint">var vizualizer = vizualizer = Vizualizer.withElement(el, 1024);
 vizualizer.start();
@@ -65,15 +69,18 @@ vizualizer.stop();</code>
 <ul>
 <li>hide()</li>
 <li>show()</li>
-<li>renderEffect(dataArray)</li>
+<li>renderEffect(dataArray) called each frame</li>
 </ul>
-<p>Example in ES6 with d3.js</p>
+<p>Example in ES6 with d3.js :</p>
 <pre><code class="lang-javascript"><code class="source-code prettyprint">class CirclesEffect extends EffectVizualizer {
     constructor(nbCircle, radius, acceleration) {
         super();
         this.nbCircle = nbCircle;
         this.radius = radius;
         this.acceleration = acceleration;
+        this.color = &quot;#fff&quot;;
+        this.opacity = 0.7;
+        this.fill = &quot;none&quot;;
     }
 
     create(svg, width, height, dataArray) {
