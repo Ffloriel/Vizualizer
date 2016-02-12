@@ -1,0 +1,1624 @@
+[
+  {
+    "__docId__": 0,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "js/effectVizualizer.es6.js",
+    "memberof": null,
+    "longname": "js/effectVizualizer.es6.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\r\n* Interface of an effect for the vizualizer\r\n* @interface\r\n*/\r\nclass EffectVizualizer{\r\n    \r\n    /**\r\n    * Constructor\r\n    * @throws {TypeError} Methods not implemented\r\n    */\r\n    constructor() {\r\n        if (this.renderEffect === undefined) {\r\n            throw TypeError(\"renderEffect(dataArray) must be implemented\");\r\n        }\r\n        if (this.hide === undefined) {\r\n            throw TypeError(\"hide() must be implemented\");\r\n        }\r\n        if (this.show === undefined) {\r\n            throw TypeError(\"show() must be implemented\");\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Render the effect\r\n     * @abstract\r\n     * @param {Uint8Array} dataArray Audio data provided by the vizualizer\r\n     */\r\n    renderEffect(dataArray) {}\r\n    \r\n    /**\r\n     * Hide the effect\r\n     * @abstract\r\n     */\r\n    hide(){}\r\n    \r\n    /**\r\n     * Show the effect\r\n     * @abstract\r\n     */\r\n    show(){}\r\n    \r\n}"
+  },
+  {
+    "__docId__": 1,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "EffectVizualizer",
+    "memberof": "js/effectVizualizer.es6.js",
+    "longname": "js/effectVizualizer.es6.js~EffectVizualizer",
+    "access": null,
+    "export": false,
+    "importPath": "./js/effectVizualizer.es6.js",
+    "importStyle": null,
+    "description": "Interface of an effect for the vizualizer",
+    "lineNumber": 5,
+    "interface": true
+  },
+  {
+    "__docId__": 2,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "js/effectVizualizer.es6.js~EffectVizualizer",
+    "longname": "js/effectVizualizer.es6.js~EffectVizualizer#constructor",
+    "access": null,
+    "description": "Constructor",
+    "lineNumber": 11,
+    "params": [],
+    "throws": [
+      {
+        "types": [
+          "TypeError"
+        ],
+        "description": "Methods not implemented"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 3,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "renderEffect",
+    "memberof": "js/effectVizualizer.es6.js~EffectVizualizer",
+    "longname": "js/effectVizualizer.es6.js~EffectVizualizer#renderEffect",
+    "access": null,
+    "description": "Render the effect",
+    "lineNumber": 28,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Uint8Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dataArray",
+        "description": "Audio data provided by the vizualizer"
+      }
+    ],
+    "abstract": true,
+    "generator": false
+  },
+  {
+    "__docId__": 4,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "hide",
+    "memberof": "js/effectVizualizer.es6.js~EffectVizualizer",
+    "longname": "js/effectVizualizer.es6.js~EffectVizualizer#hide",
+    "access": null,
+    "description": "Hide the effect",
+    "lineNumber": 34,
+    "params": [],
+    "abstract": true,
+    "generator": false
+  },
+  {
+    "__docId__": 5,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "show",
+    "memberof": "js/effectVizualizer.es6.js~EffectVizualizer",
+    "longname": "js/effectVizualizer.es6.js~EffectVizualizer#show",
+    "access": null,
+    "description": "Show the effect",
+    "lineNumber": 40,
+    "params": [],
+    "abstract": true,
+    "generator": false
+  },
+  {
+    "__docId__": 6,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "js/vizualizer.es6.js",
+    "memberof": null,
+    "longname": "js/vizualizer.es6.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\r\n* Small library to simplify the creation of audio visualisation\r\n* @class Vizualizer\r\n*/\r\nclass Vizualizer{\r\n    \r\n    /**\r\n     * Default constructor with null members\r\n     */\r\n    constructor() {\r\n        /**\r\n        * Audio Context\r\n        * @type {AudioContext}\r\n        */\r\n        this.audioContext = null;\r\n        /**\r\n        * Audio Element\r\n        * @type {Element}\r\n        */\r\n        this.audioElement = null;\r\n        /**\r\n        * Audio Source\r\n        * @type {AudioSourceNode}\r\n        */\r\n        this.audioSource = null;\r\n        /**\r\n        * Audio Analyser\r\n        * @type {AnalyserNode}\r\n        */\r\n        this.audioAnalyser = null;\r\n        /**\r\n        * Array of data of the audio\r\n        * @type {Uint8Array}\r\n        */\r\n        this.dataArray = null;\r\n        /**\r\n        * Array of effects\r\n        * @type {Array}\r\n        */\r\n        this.effects = null;\r\n        /**\r\n        * The ID value returned by the call to window.requestAnimationFrame()\r\n        * @type {number}\r\n        */\r\n        this.requestId = null;\r\n    }\r\n    \r\n    /* Constructors */\r\n    \r\n    /**\r\n     * Create a new Vizualizer with the specified url of a media\r\n     * @throws {Error} Web Audio not supported by the browser\r\n     * @param {String}     mediaUrl   Url of the media\r\n     * @param {number}     dataLength The length of the data\r\n     * @return {Vizualizer} Return a new Vizualizer\r\n     */\r\n    static withMedia(mediaUrl, dataLength) {\r\n        let vizualizer = new Vizualizer();\r\n        if (typeof AudioContext !== undefined) {\r\n            vizualizer.audioContext = new AudioContext();\r\n        } else if (typeof webkitAudioContext !== undefined) {\r\n            vizualizer.audioContext = new webkitAudioContext();\r\n        } else {\r\n            throw new Error(\"AudioContext is not supported\");\r\n        }\r\n        \r\n        vizualizer.audioElement = new Audio();\r\n        vizualizer.audioElement.crossOrigin = \"anonymous\";\r\n        vizualizer.audioElement.src = mediaUrl;\r\n        vizualizer.effects = [];\r\n    }\r\n    \r\n    /**\r\n     * Create a new Vizualizer with the specified audio element\r\n     * @throws {Error} Web Audio not supported by the browser\r\n     * @param   {Element}    element    Audio element <audio>\r\n     * @param   {number}     dataLength The length of the data\r\n     * @returns {Vizualizer} Return a new Vizualizer\r\n     */\r\n    static withElement(element, dataLength) {\r\n        let vizualizer = new Vizualizer();\r\n        \r\n        if (typeof AudioContext !== undefined) {\r\n            vizualizer.audioContext = new AudioContext();\r\n        } else if (typeof webkitAudioContext !== undefined) {\r\n            vizualizer.audioContext = new webkitAudioContext();\r\n        } else {\r\n            throw new Error(\"AudioContext is not supported\");\r\n        }\r\n        vizualizer.audioElement = element;\r\n        vizualizer.audioElement.crossOrigin = \"anonymous\";\r\n        vizualizer.audioSource = vizualizer.audioContext.createMediaElementSource(vizualizer.audioElement);\r\n        vizualizer.audioAnalyser = vizualizer.audioContext.createAnalyser();\r\n        vizualizer.audioSource.connect(vizualizer.audioAnalyser);\r\n        vizualizer.audioSource.connect(vizualizer.audioContext.destination);\r\n        vizualizer.dataArray = new Uint8Array(dataLength);\r\n        vizualizer.effects = [];\r\n        \r\n        return vizualizer;\r\n    }\r\n    \r\n    /**\r\n     * Create a new Vizualizer with the specified audio context and source\r\n     * @param   {AudioContext}    context         Audio context\r\n     * @param {AudioSourceNode} source Source\r\n     * @param   {number}          dataLength      The length of the data\r\n     * @returns {Vizualizer}      Return a new Vizualizer\r\n     */\r\n    static withContextSource(context, source, dataLength) {\r\n        let vizualizer = new Vizualizer();\r\n        \r\n        vizualizer.audioContext = context;\r\n        vizualizer.audioSource = source;\r\n        vizualizer.audioAnalyser = vizualizer.audioContext.createAnalyser();\r\n        vizualizer.audioSource.connect(vizualizer.audioAnalyser);\r\n        vizualizer.audioSource.connect(vizualizer.audioContext.destination);\r\n        vizualizer.dataArray = new Uint8Array(dataLength);\r\n        \r\n        return vizualizer;\r\n    }\r\n    \r\n    /**\r\n     * Create a new Vizualizer with the specified array buffer\r\n     * @throws {Error} Web Audio not supported by the browser\r\n     * @param   {ArrayBuffer}    arrayBuffer    Array buffer\r\n     * @param   {number}     dataLength The length of the data\r\n     * @returns {Vizualizer} Return a new Vizualizer\r\n     */\r\n    static withArrayBuffer(arrayBuffer, dataLength) {\r\n        let vizualizer = new Vizualizer();\r\n        if (typeof AudioContext !== undefined) {\r\n            vizualizer.audioContext = new AudioContext();\r\n        } else if (typeof webkitAudioContext !== undefined) {\r\n            vizualizer.audioContext = new webkitAudioContext();\r\n        } else {\r\n            throw new Error(\"AudioContext is not supported\");\r\n        }\r\n        \r\n        vizualizer.audioAnalyser = vizualizer.audioContext.createAnalyser();\r\n        vizualizer.audioContext.decodeAudioData(buffer => {\r\n            vizualizer.audioSource = vizualizer.audioContext.createBufferSource();\r\n            vizualizer.audioSource.connect(vizualizer.audioAnalyser);\r\n            vizualizer.audioSource.connect(vizualizer.audioContext.destination);\r\n            vizualizer.audioSource.buffer = buffer;\r\n        });\r\n        \r\n        return vizualizer;\r\n    }\r\n    \r\n    /**\r\n     * Start the visualisation\r\n     */\r\n    start() {\r\n        this.requestId = requestAnimationFrame(this.startRender.bind(this));\r\n    }\r\n    \r\n    /**\r\n     * Stop the visualisation\r\n     */\r\n    stop() {\r\n        cancelRequestAnimFrame(this.requestId);\r\n    }\r\n    \r\n    /**\r\n     * Render every effect in the array effects\r\n     */\r\n    startRender() {\r\n        var i = 0;\r\n        this.audioAnalyser.getByteFrequencyData(this.dataArray);\r\n        for (i; i < this.effects.length; i += 1) {\r\n            this.effects[i].renderEffect(this.dataArray);\r\n        }\r\n        requestAnimationFrame(this.startRender.bind(this));\r\n    }\r\n    \r\n    /**\r\n     * Change the effect of the vizualizer\r\n     * @param {EffectVizualizer} effectVizualizer Effect\r\n     * @param {number} [i=0]   Index of the effect to change \r\n     */\r\n    changeEffect(effectVizualizer, i = 0) {\r\n        if (this.effects[i] !== undefined) {\r\n            this.effects[i].hide();\r\n            this.effects[i] = effectVizualizer;\r\n            this.effects[i].show();\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Add an effect at the end of the array\r\n     * @param {EffectVizualizer} effect Effect to add\r\n     */\r\n    pushEffect(effect) {\r\n        this.effects.push(effect);\r\n        this.effects[this.effects.length - 1].show();\r\n    }\r\n    \r\n    /**\r\n     * Remove the last effect added\r\n     */\r\n    popEffect() {\r\n        this.effects[this.effects.length - 1].hide();\r\n        this.effects.pop();\r\n    }\r\n    \r\n    /**\r\n     * Remove the effect specified by the index\r\n     * @param {number} index Index of the element that should be remove from the effects array\r\n     */\r\n    removeEffect(index) {\r\n        this.effects[index].hide();\r\n        this.effects.splice(index, 1);\r\n    }\r\n    \r\n    /**\r\n     * Change the audio context\r\n     * @param {AudioContext} context AudioContext\r\n     */\r\n    loadAudioContext(context) {\r\n        this.audioContext = context;\r\n        this.audioAnalyser = this.audioContext.createAnalyser();\r\n        this.dataArray = new Uint8Array(this.dataArray.length);\r\n        this.audioAnalyser.getByteFrequencyData(this.dataArray);\r\n    }\r\n    \r\n    /**\r\n     * Change the audio element\r\n     * @param {Element} element Element\r\n     */\r\n    loadElement(element) {\r\n        this.audioElement = element;\r\n        this.audioSource = this.audioContext.createMediaElementSource(this.audioElement);\r\n        this.audioSource.connect(this.audioAnalyser);\r\n        this.audioSource.connect(this.audioContext.destination);\r\n    }\r\n    \r\n    /**\r\n     * Load the vizualizer with the specified array buffer\r\n     * @param {ArrayBuffer} arraybuffer Array buffer to load\r\n     */\r\n    loadArrayBuffer(arraybuffer) {\r\n        this.audioContext.decodeAudioData(buffer => {\r\n            this.audioSource = this.audioContext.createBufferSource();\r\n            this.audioSource.connect(this.audioAnalyser);\r\n            this.audioSource.connect(this.audioContext.destination);\r\n            this.audioSource.buffer = buffer;\r\n        });\r\n    }\r\n    \r\n    /**\r\n     * Load the vizualizer with the specified data url\r\n     * @param {string} dataUrl Url of the data\r\n     */\r\n    loadDataUrl(dataUrl) {\r\n        if (this.audioElement === null || this.audioElement === undefined) {\r\n            this.audioElement = new Audio();\r\n            this.audioElement.crossOrigin = \"anonymous\";\r\n        }\r\n        this.audioElement.src = dataUrl;\r\n    }\r\n        \r\n}"
+  },
+  {
+    "__docId__": 7,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Vizualizer",
+    "memberof": "js/vizualizer.es6.js",
+    "longname": "js/vizualizer.es6.js~Vizualizer",
+    "access": null,
+    "export": false,
+    "importPath": "./js/vizualizer.es6.js",
+    "importStyle": null,
+    "description": "Small library to simplify the creation of audio visualisation",
+    "lineNumber": 5,
+    "unknown": [
+      {
+        "tagName": "@class",
+        "tagValue": "Vizualizer"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "__docId__": 8,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#constructor",
+    "access": null,
+    "description": "Default constructor with null members",
+    "lineNumber": 10,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 9,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "audioContext",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#audioContext",
+    "access": null,
+    "description": "Audio Context",
+    "lineNumber": 15,
+    "type": {
+      "nullable": null,
+      "types": [
+        "AudioContext"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 10,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "audioElement",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#audioElement",
+    "access": null,
+    "description": "Audio Element",
+    "lineNumber": 20,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Element"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 11,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "audioSource",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#audioSource",
+    "access": null,
+    "description": "Audio Source",
+    "lineNumber": 25,
+    "type": {
+      "nullable": null,
+      "types": [
+        "AudioSourceNode"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 12,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "audioAnalyser",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#audioAnalyser",
+    "access": null,
+    "description": "Audio Analyser",
+    "lineNumber": 30,
+    "type": {
+      "nullable": null,
+      "types": [
+        "AnalyserNode"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 13,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "dataArray",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#dataArray",
+    "access": null,
+    "description": "Array of data of the audio",
+    "lineNumber": 35,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Uint8Array"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 14,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "effects",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#effects",
+    "access": null,
+    "description": "Array of effects",
+    "lineNumber": 40,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 15,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "requestId",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#requestId",
+    "access": null,
+    "description": "The ID value returned by the call to window.requestAnimationFrame()",
+    "lineNumber": 45,
+    "type": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 16,
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "withMedia",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer.withMedia",
+    "access": null,
+    "description": "Create a new Vizualizer with the specified url of a media",
+    "lineNumber": 57,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "mediaUrl",
+        "description": "Url of the media"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dataLength",
+        "description": "The length of the data"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Vizualizer"
+      ],
+      "spread": false,
+      "description": "Return a new Vizualizer"
+    },
+    "throws": [
+      {
+        "types": [
+          "Error"
+        ],
+        "description": "Web Audio not supported by the browser"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 17,
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "withElement",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer.withElement",
+    "access": null,
+    "description": "Create a new Vizualizer with the specified audio element",
+    "lineNumber": 80,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Vizualizer} Return a new Vizualizer"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Element"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "element",
+        "description": "Audio element <audio>"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dataLength",
+        "description": "The length of the data"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Vizualizer"
+      ],
+      "spread": false,
+      "description": "Return a new Vizualizer"
+    },
+    "throws": [
+      {
+        "types": [
+          "Error"
+        ],
+        "description": "Web Audio not supported by the browser"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 18,
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "withContextSource",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer.withContextSource",
+    "access": null,
+    "description": "Create a new Vizualizer with the specified audio context and source",
+    "lineNumber": 109,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Vizualizer}      Return a new Vizualizer"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AudioContext"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "context",
+        "description": "Audio context"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "AudioSourceNode"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "source",
+        "description": "Source"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dataLength",
+        "description": "The length of the data"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Vizualizer"
+      ],
+      "spread": false,
+      "description": "Return a new Vizualizer"
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 19,
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "withArrayBuffer",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer.withArrayBuffer",
+    "access": null,
+    "description": "Create a new Vizualizer with the specified array buffer",
+    "lineNumber": 129,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Vizualizer} Return a new Vizualizer"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "ArrayBuffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "arrayBuffer",
+        "description": "Array buffer"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dataLength",
+        "description": "The length of the data"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Vizualizer"
+      ],
+      "spread": false,
+      "description": "Return a new Vizualizer"
+    },
+    "throws": [
+      {
+        "types": [
+          "Error"
+        ],
+        "description": "Web Audio not supported by the browser"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 20,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "start",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#start",
+    "access": null,
+    "description": "Start the visualisation",
+    "lineNumber": 153,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 21,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "requestId",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#requestId",
+    "access": null,
+    "description": null,
+    "lineNumber": 154,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 22,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "stop",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#stop",
+    "access": null,
+    "description": "Stop the visualisation",
+    "lineNumber": 160,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 23,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "startRender",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#startRender",
+    "access": null,
+    "description": "Render every effect in the array effects",
+    "lineNumber": 167,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 24,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "changeEffect",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#changeEffect",
+    "access": null,
+    "description": "Change the effect of the vizualizer",
+    "lineNumber": 181,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "EffectVizualizer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "effectVizualizer",
+        "description": "Effect"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "0",
+        "defaultRaw": 0,
+        "name": "i",
+        "description": "Index of the effect to change"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 25,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "pushEffect",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#pushEffect",
+    "access": null,
+    "description": "Add an effect at the end of the array",
+    "lineNumber": 193,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "EffectVizualizer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "effect",
+        "description": "Effect to add"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 26,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "popEffect",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#popEffect",
+    "access": null,
+    "description": "Remove the last effect added",
+    "lineNumber": 201,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 27,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "removeEffect",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#removeEffect",
+    "access": null,
+    "description": "Remove the effect specified by the index",
+    "lineNumber": 210,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "index",
+        "description": "Index of the element that should be remove from the effects array"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 28,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "loadAudioContext",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#loadAudioContext",
+    "access": null,
+    "description": "Change the audio context",
+    "lineNumber": 219,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AudioContext"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "context",
+        "description": "AudioContext"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 29,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "audioContext",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#audioContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 220,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 30,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "audioAnalyser",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#audioAnalyser",
+    "access": null,
+    "description": null,
+    "lineNumber": 221,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 31,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "dataArray",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#dataArray",
+    "access": null,
+    "description": null,
+    "lineNumber": 222,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 32,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "loadElement",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#loadElement",
+    "access": null,
+    "description": "Change the audio element",
+    "lineNumber": 230,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Element"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "element",
+        "description": "Element"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 33,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "audioElement",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#audioElement",
+    "access": null,
+    "description": null,
+    "lineNumber": 231,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 34,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "audioSource",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#audioSource",
+    "access": null,
+    "description": null,
+    "lineNumber": 232,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 35,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "loadArrayBuffer",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#loadArrayBuffer",
+    "access": null,
+    "description": "Load the vizualizer with the specified array buffer",
+    "lineNumber": 241,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "ArrayBuffer"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "arraybuffer",
+        "description": "Array buffer to load"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 36,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "audioSource",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#audioSource",
+    "access": null,
+    "description": null,
+    "lineNumber": 243,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 37,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "loadDataUrl",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#loadDataUrl",
+    "access": null,
+    "description": "Load the vizualizer with the specified data url",
+    "lineNumber": 254,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dataUrl",
+        "description": "Url of the data"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 38,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "audioElement",
+    "memberof": "js/vizualizer.es6.js~Vizualizer",
+    "longname": "js/vizualizer.es6.js~Vizualizer#audioElement",
+    "access": null,
+    "description": null,
+    "lineNumber": 256,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 40,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 41,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 42,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 43,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 44,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 45,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 46,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 47,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 48,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 49,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 50,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 51,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 52,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 53,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 54,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 55,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 56,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 57,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 58,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 59,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 60,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 61,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 62,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 63,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 64,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 65,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 66,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 67,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 68,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 69,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 70,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 71,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 72,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 73,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 74,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 75,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 76,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 77,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 78,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 79,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 80,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 81,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 82,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 83,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 84,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 85,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 86,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 88,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 89,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 90,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 91,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 92,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 93,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 94,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 95,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  }
+]

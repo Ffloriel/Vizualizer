@@ -1,0 +1,17 @@
+{
+  "coverage": "100%",
+  "expectCount": 29,
+  "actualCount": 29,
+  "files": {
+    "js/effectVizualizer.es6.js": {
+      "expectCount": 5,
+      "actualCount": 5,
+      "undocumentLines": []
+    },
+    "js/vizualizer.es6.js": {
+      "expectCount": 24,
+      "actualCount": 24,
+      "undocumentLines": []
+    }
+  }
+}
