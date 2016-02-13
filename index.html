@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Vizualizer by Ffloriel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Vizualizer</h1>
+      <h2 class="project-tagline">Vizualizer.js</h2>
+      <a href="https://github.com/Ffloriel/Vizualizer" class="btn">View on GitHub</a>
+      <a href="https://github.com/Ffloriel/Vizualizer/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/Ffloriel/Vizualizer/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="vizualizerjs" class="anchor" href="#vizualizerjs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Vizualizer.js</h1>
+
+<p>Vizualizer.js is a small javascript library to simplify the creation of audio visualisation in the web browser. It uses the Web Audio API.</p>
+
+<h2>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Documentation</h2>
+
+<p>Documentation available <a href="/documentation/">here</a>.</p>
+
+<h2>
+<a id="demo" class="anchor" href="#demo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Demo</h2>
+
+<p>You can found a demo of the vizualizer <a href="/demo/">here</a>.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">audio</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>audio.mp3<span class="pl-pds">"</span></span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>audio<span class="pl-pds">"</span></span> <span class="pl-e">controls</span>&gt;&lt;/<span class="pl-ent">audio</span>&gt;
+&lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>vizualizer.min.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;</pre></div>
+
+<h3>
+<a id="create-a-vizualizer" class="anchor" href="#create-a-vizualizer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Create a vizualizer</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">//With Element</span>
+<span class="pl-k">var</span> el <span class="pl-k">=</span> <span class="pl-c1">document</span>.<span class="pl-c1">getElementById</span>(<span class="pl-s"><span class="pl-pds">"</span>audio<span class="pl-pds">"</span></span>);
+<span class="pl-k">var</span> vizualizerElement <span class="pl-k">=</span> <span class="pl-smi">Vizualizer</span>.<span class="pl-en">withElement</span>(el, <span class="pl-c1">1024</span>);
+
+<span class="pl-c">//With an url to the media (an audio element is created)</span>
+<span class="pl-k">var</span> url <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>audio.mp3<span class="pl-pds">"</span></span>;
+<span class="pl-k">var</span> vizualizerMedia <span class="pl-k">=</span> <span class="pl-smi">Vizualizer</span>.<span class="pl-en">withMedia</span>(url, <span class="pl-c1">1024</span>);</pre></div>
+
+<p>TODO: ArrayBuffer &amp; context</p>
+
+<h3>
+<a id="add-remove-and-change-an-effect" class="anchor" href="#add-remove-and-change-an-effect" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add, remove and change an effect</h3>
+
+<h3>
+<a id="start-and-stop-the-visualisation" class="anchor" href="#start-and-stop-the-visualisation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Start and Stop the visualisation</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> vizualizer <span class="pl-k">=</span> vizualizer <span class="pl-k">=</span> <span class="pl-smi">Vizualizer</span>.<span class="pl-en">withElement</span>(el, <span class="pl-c1">1024</span>);
+<span class="pl-smi">vizualizer</span>.<span class="pl-c1">start</span>();
+<span class="pl-smi">vizualizer</span>.<span class="pl-c1">stop</span>();</pre></div>
+
+<h3>
+<a id="create-an-effect" class="anchor" href="#create-an-effect" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Create an effect</h3>
+
+<p>To create an effect, you have to create a class extending <em>EffectVizualizer</em> and implement the 3 following functions:</p>
+
+<ul>
+<li>hide()</li>
+<li>show()</li>
+<li>renderEffect(dataArray) called each frame</li>
+</ul>
+
+<p>Example in ES6 with d3.js :</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">class</span> <span class="pl-en">CirclesEffect</span> <span class="pl-k">extends</span> <span class="pl-en">EffectVizualizer</span> {
+    <span class="pl-en">constructor</span>(<span class="pl-smi">nbCircle</span>, <span class="pl-smi">radius</span>, <span class="pl-smi">acceleration</span>) {
+        <span class="pl-v">super</span>();
+        <span class="pl-v">this</span>.<span class="pl-smi">nbCircle</span> <span class="pl-k">=</span> nbCircle;
+        <span class="pl-v">this</span>.<span class="pl-smi">radius</span> <span class="pl-k">=</span> radius;
+        <span class="pl-v">this</span>.<span class="pl-smi">acceleration</span> <span class="pl-k">=</span> acceleration;
+        <span class="pl-v">this</span>.<span class="pl-c1">color</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>#fff<span class="pl-pds">"</span></span>;
+        <span class="pl-v">this</span>.<span class="pl-smi">opacity</span> <span class="pl-k">=</span> <span class="pl-c1">0.7</span>;
+        <span class="pl-v">this</span>.<span class="pl-smi">fill</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>none<span class="pl-pds">"</span></span>;
+    }
+
+    <span class="pl-en">create</span>(<span class="pl-smi">svg</span>, <span class="pl-smi">width</span>, <span class="pl-smi">height</span>, <span class="pl-smi">dataArray</span>) {
+        <span class="pl-k">let</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+        <span class="pl-v">this</span>.<span class="pl-c1">width</span> <span class="pl-k">=</span> width;
+        <span class="pl-v">this</span>.<span class="pl-c1">height</span> <span class="pl-k">=</span> height;
+        <span class="pl-v">this</span>.<span class="pl-smi">circles</span> <span class="pl-k">=</span> [];
+
+        <span class="pl-k">for</span> (i; i <span class="pl-k">&lt;</span> <span class="pl-v">this</span>.<span class="pl-smi">nbCircle</span>; i <span class="pl-k">+=</span> <span class="pl-c1">1</span>) {
+            <span class="pl-v">this</span>.<span class="pl-smi">circles</span>[i] <span class="pl-k">=</span> <span class="pl-smi">svg</span>.<span class="pl-en">append</span>(<span class="pl-s"><span class="pl-pds">"</span>circle<span class="pl-pds">"</span></span>)
+                .<span class="pl-c1">data</span>(dataArray)
+                .<span class="pl-en">attr</span>(<span class="pl-s"><span class="pl-pds">"</span>cx<span class="pl-pds">"</span></span>, width <span class="pl-k">/</span> <span class="pl-c1">2</span>)
+                .<span class="pl-en">attr</span>(<span class="pl-s"><span class="pl-pds">"</span>cy<span class="pl-pds">"</span></span>, height <span class="pl-k">/</span> <span class="pl-c1">2</span>)
+                .<span class="pl-en">attr</span>(<span class="pl-s"><span class="pl-pds">"</span>stroke-width<span class="pl-pds">"</span></span>, <span class="pl-c1">2</span>)
+                .<span class="pl-en">attr</span>(<span class="pl-s"><span class="pl-pds">"</span>stroke<span class="pl-pds">"</span></span>, <span class="pl-v">this</span>.<span class="pl-c1">color</span>)
+                .<span class="pl-en">attr</span>(<span class="pl-s"><span class="pl-pds">"</span>fill<span class="pl-pds">"</span></span>, <span class="pl-v">this</span>.<span class="pl-smi">fill</span>)
+                .<span class="pl-en">attr</span>(<span class="pl-s"><span class="pl-pds">"</span>opacity<span class="pl-pds">"</span></span>, <span class="pl-v">this</span>.<span class="pl-smi">opacity</span>);
+        }
+    }
+
+    <span class="pl-en">renderEffect</span>(<span class="pl-smi">dataArray</span>) {
+        <span class="pl-k">let</span> r;
+        <span class="pl-k">let</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+        <span class="pl-k">for</span> (i; i <span class="pl-k">&lt;</span> <span class="pl-v">this</span>.<span class="pl-smi">nbCircle</span>; i <span class="pl-k">+=</span> <span class="pl-c1">1</span>) {
+            r <span class="pl-k">=</span> <span class="pl-v">this</span>.<span class="pl-smi">radius</span> <span class="pl-k">+</span> <span class="pl-smi">d3</span>.<span class="pl-en">mean</span>(dataArray) <span class="pl-k">*</span> (<span class="pl-v">this</span>.<span class="pl-smi">acceleration</span> <span class="pl-k">+</span> i <span class="pl-k">*</span> <span class="pl-c1">0.1</span>) <span class="pl-k">*</span> <span class="pl-v">this</span>.<span class="pl-c1">height</span> <span class="pl-k">/</span> <span class="pl-c1">255</span>;
+            <span class="pl-v">this</span>.<span class="pl-smi">circles</span>[i].<span class="pl-c1">data</span>(dataArray)
+                .<span class="pl-en">attr</span>(<span class="pl-s"><span class="pl-pds">"</span>r<span class="pl-pds">"</span></span>, r);
+        }
+    }
+
+    <span class="pl-en">hide</span>() {
+        <span class="pl-k">let</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+        <span class="pl-k">for</span> (i; i <span class="pl-k">&lt;</span> <span class="pl-v">this</span>.<span class="pl-smi">nbCircle</span>; i <span class="pl-k">+=</span> <span class="pl-c1">1</span>) {
+            <span class="pl-v">this</span>.<span class="pl-smi">circles</span>[i].<span class="pl-en">attr</span>(<span class="pl-s"><span class="pl-pds">"</span>opacity<span class="pl-pds">"</span></span>, <span class="pl-c1">0</span>);
+        }
+    }
+
+    <span class="pl-en">show</span>() {
+        <span class="pl-k">let</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+        <span class="pl-k">for</span> (i; i <span class="pl-k">&lt;</span> <span class="pl-v">this</span>.<span class="pl-smi">nbCircle</span>; i <span class="pl-k">+=</span> <span class="pl-c1">1</span>) {
+            <span class="pl-v">this</span>.<span class="pl-smi">circles</span>[i].<span class="pl-en">attr</span>(<span class="pl-s"><span class="pl-pds">"</span>opacity<span class="pl-pds">"</span></span>, <span class="pl-v">this</span>.<span class="pl-smi">opacity</span>);
+        }
+    }
+
+}</pre></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/Ffloriel/Vizualizer">Vizualizer</a> is maintained by <a href="https://github.com/Ffloriel">Ffloriel</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
