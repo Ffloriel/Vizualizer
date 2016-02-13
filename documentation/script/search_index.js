@@ -1,14 +1,14 @@
 window.esdocSearchIndex = [
   [
-    "./js/effectvizualizer.es6.js~effectvizualizer",
-    "class/js/effectVizualizer.es6.js~EffectVizualizer.html",
-    "<span>EffectVizualizer</span> <span class=\"search-result-import-path\">./js/effectVizualizer.es6.js</span>",
+    "./src/effectvizualizer.es6.js~effectvizualizer",
+    "class/src/effectVizualizer.es6.js~EffectVizualizer.html",
+    "<span>EffectVizualizer</span> <span class=\"search-result-import-path\">./src/effectVizualizer.es6.js</span>",
     "class"
   ],
   [
-    "./js/vizualizer.es6.js~vizualizer",
-    "class/js/vizualizer.es6.js~Vizualizer.html",
-    "<span>Vizualizer</span> <span class=\"search-result-import-path\">./js/vizualizer.es6.js</span>",
+    "./src/vizualizer.es6.js~vizualizer",
+    "class/src/vizualizer.es6.js~Vizualizer.html",
+    "<span>Vizualizer</span> <span class=\"search-result-import-path\">./src/vizualizer.es6.js</span>",
     "class"
   ],
   [
@@ -342,177 +342,177 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "js/effectvizualizer.es6.js",
-    "file/js/effectVizualizer.es6.js.html",
-    "js/effectVizualizer.es6.js",
+    "src/effectvizualizer.es6.js",
+    "file/src/effectVizualizer.es6.js.html",
+    "src/effectVizualizer.es6.js",
     "file"
   ],
   [
-    "js/effectvizualizer.es6.js~effectvizualizer#constructor",
-    "class/js/effectVizualizer.es6.js~EffectVizualizer.html#instance-constructor-constructor",
-    "js/effectVizualizer.es6.js~EffectVizualizer#constructor",
+    "src/effectvizualizer.es6.js~effectvizualizer#constructor",
+    "class/src/effectVizualizer.es6.js~EffectVizualizer.html#instance-constructor-constructor",
+    "src/effectVizualizer.es6.js~EffectVizualizer#constructor",
     "method"
   ],
   [
-    "js/effectvizualizer.es6.js~effectvizualizer#hide",
-    "class/js/effectVizualizer.es6.js~EffectVizualizer.html#instance-method-hide",
-    "js/effectVizualizer.es6.js~EffectVizualizer#hide",
+    "src/effectvizualizer.es6.js~effectvizualizer#hide",
+    "class/src/effectVizualizer.es6.js~EffectVizualizer.html#instance-method-hide",
+    "src/effectVizualizer.es6.js~EffectVizualizer#hide",
     "method"
   ],
   [
-    "js/effectvizualizer.es6.js~effectvizualizer#rendereffect",
-    "class/js/effectVizualizer.es6.js~EffectVizualizer.html#instance-method-renderEffect",
-    "js/effectVizualizer.es6.js~EffectVizualizer#renderEffect",
+    "src/effectvizualizer.es6.js~effectvizualizer#rendereffect",
+    "class/src/effectVizualizer.es6.js~EffectVizualizer.html#instance-method-renderEffect",
+    "src/effectVizualizer.es6.js~EffectVizualizer#renderEffect",
     "method"
   ],
   [
-    "js/effectvizualizer.es6.js~effectvizualizer#show",
-    "class/js/effectVizualizer.es6.js~EffectVizualizer.html#instance-method-show",
-    "js/effectVizualizer.es6.js~EffectVizualizer#show",
+    "src/effectvizualizer.es6.js~effectvizualizer#show",
+    "class/src/effectVizualizer.es6.js~EffectVizualizer.html#instance-method-show",
+    "src/effectVizualizer.es6.js~EffectVizualizer#show",
     "method"
   ],
   [
-    "js/vizualizer.es6.js",
-    "file/js/vizualizer.es6.js.html",
-    "js/vizualizer.es6.js",
+    "src/vizualizer.es6.js",
+    "file/src/vizualizer.es6.js.html",
+    "src/vizualizer.es6.js",
     "file"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#audioanalyser",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-member-audioAnalyser",
-    "js/vizualizer.es6.js~Vizualizer#audioAnalyser",
+    "src/vizualizer.es6.js~vizualizer#addeffect",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-addEffect",
+    "src/vizualizer.es6.js~Vizualizer#addEffect",
+    "method"
+  ],
+  [
+    "src/vizualizer.es6.js~vizualizer#audioanalyser",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-member-audioAnalyser",
+    "src/vizualizer.es6.js~Vizualizer#audioAnalyser",
     "member"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#audiocontext",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-member-audioContext",
-    "js/vizualizer.es6.js~Vizualizer#audioContext",
+    "src/vizualizer.es6.js~vizualizer#audiocontext",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-member-audioContext",
+    "src/vizualizer.es6.js~Vizualizer#audioContext",
     "member"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#audioelement",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-member-audioElement",
-    "js/vizualizer.es6.js~Vizualizer#audioElement",
+    "src/vizualizer.es6.js~vizualizer#audioelement",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-member-audioElement",
+    "src/vizualizer.es6.js~Vizualizer#audioElement",
     "member"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#audiosource",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-member-audioSource",
-    "js/vizualizer.es6.js~Vizualizer#audioSource",
+    "src/vizualizer.es6.js~vizualizer#audiosource",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-member-audioSource",
+    "src/vizualizer.es6.js~Vizualizer#audioSource",
     "member"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#changeeffect",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-method-changeEffect",
-    "js/vizualizer.es6.js~Vizualizer#changeEffect",
+    "src/vizualizer.es6.js~vizualizer#changeeffect",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-changeEffect",
+    "src/vizualizer.es6.js~Vizualizer#changeEffect",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#constructor",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-constructor-constructor",
-    "js/vizualizer.es6.js~Vizualizer#constructor",
+    "src/vizualizer.es6.js~vizualizer#constructor",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-constructor-constructor",
+    "src/vizualizer.es6.js~Vizualizer#constructor",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#dataarray",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-member-dataArray",
-    "js/vizualizer.es6.js~Vizualizer#dataArray",
+    "src/vizualizer.es6.js~vizualizer#dataarray",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-member-dataArray",
+    "src/vizualizer.es6.js~Vizualizer#dataArray",
     "member"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#effects",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-member-effects",
-    "js/vizualizer.es6.js~Vizualizer#effects",
+    "src/vizualizer.es6.js~vizualizer#effects",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-member-effects",
+    "src/vizualizer.es6.js~Vizualizer#effects",
     "member"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#loadarraybuffer",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-method-loadArrayBuffer",
-    "js/vizualizer.es6.js~Vizualizer#loadArrayBuffer",
+    "src/vizualizer.es6.js~vizualizer#loadarraybuffer",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-loadArrayBuffer",
+    "src/vizualizer.es6.js~Vizualizer#loadArrayBuffer",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#loadaudiocontext",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-method-loadAudioContext",
-    "js/vizualizer.es6.js~Vizualizer#loadAudioContext",
+    "src/vizualizer.es6.js~vizualizer#loadaudiocontext",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-loadAudioContext",
+    "src/vizualizer.es6.js~Vizualizer#loadAudioContext",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#loaddataurl",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-method-loadDataUrl",
-    "js/vizualizer.es6.js~Vizualizer#loadDataUrl",
+    "src/vizualizer.es6.js~vizualizer#loaddataurl",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-loadDataUrl",
+    "src/vizualizer.es6.js~Vizualizer#loadDataUrl",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#loadelement",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-method-loadElement",
-    "js/vizualizer.es6.js~Vizualizer#loadElement",
+    "src/vizualizer.es6.js~vizualizer#loadelement",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-loadElement",
+    "src/vizualizer.es6.js~Vizualizer#loadElement",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#popeffect",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-method-popEffect",
-    "js/vizualizer.es6.js~Vizualizer#popEffect",
+    "src/vizualizer.es6.js~vizualizer#popeffect",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-popEffect",
+    "src/vizualizer.es6.js~Vizualizer#popEffect",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#pusheffect",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-method-pushEffect",
-    "js/vizualizer.es6.js~Vizualizer#pushEffect",
+    "src/vizualizer.es6.js~vizualizer#removeeffect",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-removeEffect",
+    "src/vizualizer.es6.js~Vizualizer#removeEffect",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#removeeffect",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-method-removeEffect",
-    "js/vizualizer.es6.js~Vizualizer#removeEffect",
-    "method"
-  ],
-  [
-    "js/vizualizer.es6.js~vizualizer#requestid",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-member-requestId",
-    "js/vizualizer.es6.js~Vizualizer#requestId",
+    "src/vizualizer.es6.js~vizualizer#requestid",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-member-requestId",
+    "src/vizualizer.es6.js~Vizualizer#requestId",
     "member"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#start",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-method-start",
-    "js/vizualizer.es6.js~Vizualizer#start",
+    "src/vizualizer.es6.js~vizualizer#start",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-start",
+    "src/vizualizer.es6.js~Vizualizer#start",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#startrender",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-method-startRender",
-    "js/vizualizer.es6.js~Vizualizer#startRender",
+    "src/vizualizer.es6.js~vizualizer#startrender",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-startRender",
+    "src/vizualizer.es6.js~Vizualizer#startRender",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer#stop",
-    "class/js/vizualizer.es6.js~Vizualizer.html#instance-method-stop",
-    "js/vizualizer.es6.js~Vizualizer#stop",
+    "src/vizualizer.es6.js~vizualizer#stop",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-stop",
+    "src/vizualizer.es6.js~Vizualizer#stop",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer.witharraybuffer",
-    "class/js/vizualizer.es6.js~Vizualizer.html#static-method-withArrayBuffer",
-    "js/vizualizer.es6.js~Vizualizer.withArrayBuffer",
+    "src/vizualizer.es6.js~vizualizer.witharraybuffer",
+    "class/src/vizualizer.es6.js~Vizualizer.html#static-method-withArrayBuffer",
+    "src/vizualizer.es6.js~Vizualizer.withArrayBuffer",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer.withcontextsource",
-    "class/js/vizualizer.es6.js~Vizualizer.html#static-method-withContextSource",
-    "js/vizualizer.es6.js~Vizualizer.withContextSource",
+    "src/vizualizer.es6.js~vizualizer.withcontextsource",
+    "class/src/vizualizer.es6.js~Vizualizer.html#static-method-withContextSource",
+    "src/vizualizer.es6.js~Vizualizer.withContextSource",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer.withelement",
-    "class/js/vizualizer.es6.js~Vizualizer.html#static-method-withElement",
-    "js/vizualizer.es6.js~Vizualizer.withElement",
+    "src/vizualizer.es6.js~vizualizer.withelement",
+    "class/src/vizualizer.es6.js~Vizualizer.html#static-method-withElement",
+    "src/vizualizer.es6.js~Vizualizer.withElement",
     "method"
   ],
   [
-    "js/vizualizer.es6.js~vizualizer.withmedia",
-    "class/js/vizualizer.es6.js~Vizualizer.html#static-method-withMedia",
-    "js/vizualizer.es6.js~Vizualizer.withMedia",
+    "src/vizualizer.es6.js~vizualizer.withmedia",
+    "class/src/vizualizer.es6.js~Vizualizer.html#static-method-withMedia",
+    "src/vizualizer.es6.js~Vizualizer.withMedia",
     "method"
   ]
 ]
