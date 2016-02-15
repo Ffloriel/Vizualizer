@@ -432,6 +432,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/vizualizer.es6.js~vizualizer#initializevisibilityevent",
+    "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-initializeVisibilityEvent",
+    "src/vizualizer.es6.js~Vizualizer#initializeVisibilityEvent",
+    "method"
+  ],
+  [
     "src/vizualizer.es6.js~vizualizer#loadarraybuffer",
     "class/src/vizualizer.es6.js~Vizualizer.html#instance-method-loadArrayBuffer",
     "src/vizualizer.es6.js~Vizualizer#loadArrayBuffer",

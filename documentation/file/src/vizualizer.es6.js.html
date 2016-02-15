@@ -109,6 +109,7 @@ class Vizualizer{
         vizualizer.audioElement.crossOrigin = &quot;anonymous&quot;;
         vizualizer.audioElement.src = mediaUrl;
         vizualizer.effects = [];
+        vizualizer.initializeVisibilityEvent();
     }
     
     /**
@@ -136,6 +137,7 @@ class Vizualizer{
         vizualizer.audioSource.connect(vizualizer.audioContext.destination);
         vizualizer.dataArray = new Uint8Array(bufferLength);
         vizualizer.effects = [];
+        vizualizer.initializeVisibilityEvent();
         
         return vizualizer;
     }
@@ -157,6 +159,7 @@ class Vizualizer{
         vizualizer.audioSource.connect(vizualizer.audioContext.destination);
         vizualizer.dataArray = new Uint8Array(bufferLength);
         vizualizer.effects = [];
+        vizualizer.initializeVisibilityEvent();
         
         return vizualizer;
     }
@@ -185,6 +188,9 @@ class Vizualizer{
             vizualizer.audioSource.connect(vizualizer.audioContext.destination);
             vizualizer.audioSource.buffer = buffer;
         });
+        vizualizer.dataArray = new Uint8Array(bufferLength);
+        vizualizer.effects = [];
+        vizualizer.initializeVisibilityEvent();
         
         return vizualizer;
     }
@@ -200,7 +206,7 @@ class Vizualizer{
      * Stop the visualisation
      */
     stop() {
-        cancelRequestAnimFrame(this.requestId);
+        cancelAnimationFrame(this.requestId);
     }
     
     /**
@@ -299,6 +305,38 @@ class Vizualizer{
             this.audioElement.crossOrigin = &quot;anonymous&quot;;
         }
         this.audioElement.src = dataUrl;
+    }
+    
+    /**
+     * Initialize the visibilty change event to stop the visualisation when the page is not visible.
+     */
+    initializeVisibilityEvent() {
+        let hidden, visibilityChange;
+        if (typeof document.hidden !== &quot;undefined&quot;) { // Opera 12.10 and Firefox 18 and later support 
+            hidden = &quot;hidden&quot;;
+            visibilityChange = &quot;visibilitychange&quot;;
+        } else if (typeof document.mozHidden !== &quot;undefined&quot;) {
+            hidden = &quot;mozHidden&quot;;
+            visibilityChange = &quot;mozvisibilitychange&quot;;
+        } else if (typeof document.msHidden !== &quot;undefined&quot;) {
+            hidden = &quot;msHidden&quot;;
+            visibilityChange = &quot;msvisibilitychange&quot;;
+        } else if (typeof document.webkitHidden !== &quot;undefined&quot;) {
+            hidden = &quot;webkitHidden&quot;;
+            visibilityChange = &quot;webkitvisibilitychange&quot;;
+        }
+
+        if (typeof document[hidden] != &quot;undefined&quot;) {
+            document.addEventListener(visibilityChange,
+                e =&gt; {
+                    if (document[hidden]) {
+                        this.stop();
+                    } else {
+                        this.start();
+                    }
+                }, false);
+        }
+
     }
         
 }</code></pre>

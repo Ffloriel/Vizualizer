@@ -117,7 +117,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\r\n* Small library to simplify the creation of audio visualisation\r\n* @class Vizualizer\r\n*/\r\nclass Vizualizer{\r\n    \r\n    /**\r\n     * Default constructor with null members\r\n     */\r\n    constructor() {\r\n        /**\r\n        * Audio Context\r\n        * @type {AudioContext}\r\n        */\r\n        this.audioContext = null;\r\n        /**\r\n        * Audio Element\r\n        * @type {Element}\r\n        */\r\n        this.audioElement = null;\r\n        /**\r\n        * Audio Source\r\n        * @type {AudioSourceNode}\r\n        */\r\n        this.audioSource = null;\r\n        /**\r\n        * Audio Analyser\r\n        * @type {AnalyserNode}\r\n        */\r\n        this.audioAnalyser = null;\r\n        /**\r\n        * Array of data of the audio\r\n        * @type {Uint8Array}\r\n        */\r\n        this.dataArray = null;\r\n        /**\r\n        * Array of effects\r\n        * @type {Array}\r\n        */\r\n        this.effects = null;\r\n        /**\r\n        * The ID value returned by the call to window.requestAnimationFrame()\r\n        * @type {number}\r\n        */\r\n        this.requestId = null;\r\n    }\r\n    \r\n    /* Constructors */\r\n    \r\n    /**\r\n     * Create a new Vizualizer with the specified url of a media\r\n     * @throws {Error} Web Audio not supported by the browser\r\n     * @param {String}     mediaUrl   Url of the media\r\n     * @param {number}     [bufferLength=1024] The length of the buffer\r\n     * @return {Vizualizer} Return a new Vizualizer\r\n     */\r\n    static withMedia(mediaUrl, bufferLength = 1024) {\r\n        let vizualizer = new Vizualizer();\r\n        if (typeof AudioContext !== undefined) {\r\n            vizualizer.audioContext = new AudioContext();\r\n        } else if (typeof webkitAudioContext !== undefined) {\r\n            vizualizer.audioContext = new webkitAudioContext();\r\n        } else {\r\n            throw new Error(\"AudioContext is not supported\");\r\n        }\r\n        \r\n        vizualizer.audioElement = new Audio();\r\n        vizualizer.audioElement.crossOrigin = \"anonymous\";\r\n        vizualizer.audioElement.src = mediaUrl;\r\n        vizualizer.effects = [];\r\n    }\r\n    \r\n    /**\r\n     * Create a new Vizualizer with the specified audio element\r\n     * @throws {Error} Web Audio not supported by the browser\r\n     * @param   {Element}    element    Audio element <audio>\r\n     * @param   {number}     [bufferLength=1024] The length of the buffer\r\n     * @returns {Vizualizer} Return a new Vizualizer\r\n     */\r\n    static withElement(element, bufferLength = 1024) {\r\n        let vizualizer = new Vizualizer();\r\n        \r\n        if (typeof AudioContext !== undefined) {\r\n            vizualizer.audioContext = new AudioContext();\r\n        } else if (typeof webkitAudioContext !== undefined) {\r\n            vizualizer.audioContext = new webkitAudioContext();\r\n        } else {\r\n            throw new Error(\"AudioContext is not supported\");\r\n        }\r\n        vizualizer.audioElement = element;\r\n        vizualizer.audioElement.crossOrigin = \"anonymous\";\r\n        vizualizer.audioSource = vizualizer.audioContext.createMediaElementSource(vizualizer.audioElement);\r\n        vizualizer.audioAnalyser = vizualizer.audioContext.createAnalyser();\r\n        vizualizer.audioSource.connect(vizualizer.audioAnalyser);\r\n        vizualizer.audioSource.connect(vizualizer.audioContext.destination);\r\n        vizualizer.dataArray = new Uint8Array(bufferLength);\r\n        vizualizer.effects = [];\r\n        \r\n        return vizualizer;\r\n    }\r\n    \r\n    /**\r\n     * Create a new Vizualizer with the specified audio context and source\r\n     * @param   {AudioContext}    context         Audio context\r\n     * @param {AudioSourceNode} source Source\r\n     * @param   {number}          [bufferLength=1024]      The length of the buffer\r\n     * @returns {Vizualizer}      Return a new Vizualizer\r\n     */\r\n    static withContextSource(context, source, bufferLength = 1024) {\r\n        let vizualizer = new Vizualizer();\r\n        \r\n        vizualizer.audioContext = context;\r\n        vizualizer.audioSource = source;\r\n        vizualizer.audioAnalyser = vizualizer.audioContext.createAnalyser();\r\n        vizualizer.audioSource.connect(vizualizer.audioAnalyser);\r\n        vizualizer.audioSource.connect(vizualizer.audioContext.destination);\r\n        vizualizer.dataArray = new Uint8Array(bufferLength);\r\n        vizualizer.effects = [];\r\n        \r\n        return vizualizer;\r\n    }\r\n    \r\n    /**\r\n     * Create a new Vizualizer with the specified array buffer\r\n     * @throws {Error} Web Audio not supported by the browser\r\n     * @param   {ArrayBuffer}    arrayBuffer    Array buffer\r\n     * @param   {number}     [bufferLength=1024] The length of the buffer\r\n     * @returns {Vizualizer} Return a new Vizualizer\r\n     */\r\n    static withArrayBuffer(arrayBuffer, bufferLength = 1024) {\r\n        let vizualizer = new Vizualizer();\r\n        if (typeof AudioContext !== undefined) {\r\n            vizualizer.audioContext = new AudioContext();\r\n        } else if (typeof webkitAudioContext !== undefined) {\r\n            vizualizer.audioContext = new webkitAudioContext();\r\n        } else {\r\n            throw new Error(\"AudioContext is not supported\");\r\n        }\r\n        \r\n        vizualizer.audioAnalyser = vizualizer.audioContext.createAnalyser();\r\n        vizualizer.audioContext.decodeAudioData(buffer => {\r\n            vizualizer.audioSource = vizualizer.audioContext.createBufferSource();\r\n            vizualizer.audioSource.connect(vizualizer.audioAnalyser);\r\n            vizualizer.audioSource.connect(vizualizer.audioContext.destination);\r\n            vizualizer.audioSource.buffer = buffer;\r\n        });\r\n        \r\n        return vizualizer;\r\n    }\r\n    \r\n    /**\r\n     * Start the visualisation\r\n     */\r\n    start() {\r\n        this.requestId = requestAnimationFrame(this.startRender.bind(this));\r\n    }\r\n    \r\n    /**\r\n     * Stop the visualisation\r\n     */\r\n    stop() {\r\n        cancelRequestAnimFrame(this.requestId);\r\n    }\r\n    \r\n    /**\r\n     * Render every effect in the array effects\r\n     */\r\n    startRender() {\r\n        var i = 0;\r\n        this.audioAnalyser.getByteFrequencyData(this.dataArray);\r\n        for (i; i < this.effects.length; i += 1) {\r\n            this.effects[i].renderEffect(this.dataArray);\r\n        }\r\n        requestAnimationFrame(this.startRender.bind(this));\r\n    }\r\n    \r\n    /**\r\n     * Change the effect of the vizualizer\r\n     * @param {EffectVizualizer} effectVizualizer Effect\r\n     * @param {number} [i=0]   Index of the effect to change \r\n     */\r\n    changeEffect(effectVizualizer, i = 0) {\r\n        if (this.effects[i] !== undefined) {\r\n            this.effects[i].hide();\r\n            this.effects[i] = effectVizualizer;\r\n            this.effects[i].show();\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Add an effect at the end of the array\r\n     * @param {EffectVizualizer} effect Effect to add\r\n     */\r\n    addEffect(effect) {\r\n        this.effects.push(effect);\r\n        this.effects[this.effects.length - 1].show();\r\n    }\r\n    \r\n    /**\r\n     * Remove the last effect added\r\n     */\r\n    popEffect() {\r\n        this.effects[this.effects.length - 1].hide();\r\n        this.effects.pop();\r\n    }\r\n    \r\n    /**\r\n     * Remove the effect specified by the index\r\n     * @param {number} index Index of the element that should be remove from the effects array\r\n     */\r\n    removeEffect(index) {\r\n        this.effects[index].hide();\r\n        this.effects.splice(index, 1);\r\n    }\r\n    \r\n    /**\r\n     * Change the audio context\r\n     * @param {AudioContext} context AudioContext\r\n     */\r\n    loadAudioContext(context) {\r\n        this.audioContext = context;\r\n        this.audioAnalyser = this.audioContext.createAnalyser();\r\n        this.dataArray = new Uint8Array(this.dataArray.length);\r\n        this.audioAnalyser.getByteFrequencyData(this.dataArray);\r\n    }\r\n    \r\n    /**\r\n     * Change the audio element\r\n     * @param {Element} element Element\r\n     */\r\n    loadElement(element) {\r\n        this.audioElement = element;\r\n        this.audioSource = this.audioContext.createMediaElementSource(this.audioElement);\r\n        this.audioSource.connect(this.audioAnalyser);\r\n        this.audioSource.connect(this.audioContext.destination);\r\n    }\r\n    \r\n    /**\r\n     * Load the vizualizer with the specified array buffer\r\n     * @param {ArrayBuffer} arraybuffer Array buffer to load\r\n     */\r\n    loadArrayBuffer(arraybuffer) {\r\n        this.audioContext.decodeAudioData(buffer => {\r\n            this.audioSource = this.audioContext.createBufferSource();\r\n            this.audioSource.connect(this.audioAnalyser);\r\n            this.audioSource.connect(this.audioContext.destination);\r\n            this.audioSource.buffer = buffer;\r\n        });\r\n    }\r\n    \r\n    /**\r\n     * Load the vizualizer with the specified data url\r\n     * @param {string} dataUrl Url of the data\r\n     */\r\n    loadDataUrl(dataUrl) {\r\n        if (this.audioElement === null || this.audioElement === undefined) {\r\n            this.audioElement = new Audio();\r\n            this.audioElement.crossOrigin = \"anonymous\";\r\n        }\r\n        this.audioElement.src = dataUrl;\r\n    }\r\n        \r\n}"
+    "content": "/**\r\n* Small library to simplify the creation of audio visualisation\r\n* @class Vizualizer\r\n*/\r\nclass Vizualizer{\r\n    \r\n    /**\r\n     * Default constructor with null members\r\n     */\r\n    constructor() {\r\n        /**\r\n        * Audio Context\r\n        * @type {AudioContext}\r\n        */\r\n        this.audioContext = null;\r\n        /**\r\n        * Audio Element\r\n        * @type {Element}\r\n        */\r\n        this.audioElement = null;\r\n        /**\r\n        * Audio Source\r\n        * @type {AudioSourceNode}\r\n        */\r\n        this.audioSource = null;\r\n        /**\r\n        * Audio Analyser\r\n        * @type {AnalyserNode}\r\n        */\r\n        this.audioAnalyser = null;\r\n        /**\r\n        * Array of data of the audio\r\n        * @type {Uint8Array}\r\n        */\r\n        this.dataArray = null;\r\n        /**\r\n        * Array of effects\r\n        * @type {Array}\r\n        */\r\n        this.effects = null;\r\n        /**\r\n        * The ID value returned by the call to window.requestAnimationFrame()\r\n        * @type {number}\r\n        */\r\n        this.requestId = null;\r\n    }\r\n    \r\n    /* Constructors */\r\n    \r\n    /**\r\n     * Create a new Vizualizer with the specified url of a media\r\n     * @throws {Error} Web Audio not supported by the browser\r\n     * @param {String}     mediaUrl   Url of the media\r\n     * @param {number}     [bufferLength=1024] The length of the buffer\r\n     * @return {Vizualizer} Return a new Vizualizer\r\n     */\r\n    static withMedia(mediaUrl, bufferLength = 1024) {\r\n        let vizualizer = new Vizualizer();\r\n        if (typeof AudioContext !== undefined) {\r\n            vizualizer.audioContext = new AudioContext();\r\n        } else if (typeof webkitAudioContext !== undefined) {\r\n            vizualizer.audioContext = new webkitAudioContext();\r\n        } else {\r\n            throw new Error(\"AudioContext is not supported\");\r\n        }\r\n        \r\n        vizualizer.audioElement = new Audio();\r\n        vizualizer.audioElement.crossOrigin = \"anonymous\";\r\n        vizualizer.audioElement.src = mediaUrl;\r\n        vizualizer.effects = [];\r\n        vizualizer.initializeVisibilityEvent();\r\n    }\r\n    \r\n    /**\r\n     * Create a new Vizualizer with the specified audio element\r\n     * @throws {Error} Web Audio not supported by the browser\r\n     * @param   {Element}    element    Audio element <audio>\r\n     * @param   {number}     [bufferLength=1024] The length of the buffer\r\n     * @returns {Vizualizer} Return a new Vizualizer\r\n     */\r\n    static withElement(element, bufferLength = 1024) {\r\n        let vizualizer = new Vizualizer();\r\n        \r\n        if (typeof AudioContext !== undefined) {\r\n            vizualizer.audioContext = new AudioContext();\r\n        } else if (typeof webkitAudioContext !== undefined) {\r\n            vizualizer.audioContext = new webkitAudioContext();\r\n        } else {\r\n            throw new Error(\"AudioContext is not supported\");\r\n        }\r\n        vizualizer.audioElement = element;\r\n        vizualizer.audioElement.crossOrigin = \"anonymous\";\r\n        vizualizer.audioSource = vizualizer.audioContext.createMediaElementSource(vizualizer.audioElement);\r\n        vizualizer.audioAnalyser = vizualizer.audioContext.createAnalyser();\r\n        vizualizer.audioSource.connect(vizualizer.audioAnalyser);\r\n        vizualizer.audioSource.connect(vizualizer.audioContext.destination);\r\n        vizualizer.dataArray = new Uint8Array(bufferLength);\r\n        vizualizer.effects = [];\r\n        vizualizer.initializeVisibilityEvent();\r\n        \r\n        return vizualizer;\r\n    }\r\n    \r\n    /**\r\n     * Create a new Vizualizer with the specified audio context and source\r\n     * @param   {AudioContext}    context         Audio context\r\n     * @param {AudioSourceNode} source Source\r\n     * @param   {number}          [bufferLength=1024]      The length of the buffer\r\n     * @returns {Vizualizer}      Return a new Vizualizer\r\n     */\r\n    static withContextSource(context, source, bufferLength = 1024) {\r\n        let vizualizer = new Vizualizer();\r\n        \r\n        vizualizer.audioContext = context;\r\n        vizualizer.audioSource = source;\r\n        vizualizer.audioAnalyser = vizualizer.audioContext.createAnalyser();\r\n        vizualizer.audioSource.connect(vizualizer.audioAnalyser);\r\n        vizualizer.audioSource.connect(vizualizer.audioContext.destination);\r\n        vizualizer.dataArray = new Uint8Array(bufferLength);\r\n        vizualizer.effects = [];\r\n        vizualizer.initializeVisibilityEvent();\r\n        \r\n        return vizualizer;\r\n    }\r\n    \r\n    /**\r\n     * Create a new Vizualizer with the specified array buffer\r\n     * @throws {Error} Web Audio not supported by the browser\r\n     * @param   {ArrayBuffer}    arrayBuffer    Array buffer\r\n     * @param   {number}     [bufferLength=1024] The length of the buffer\r\n     * @returns {Vizualizer} Return a new Vizualizer\r\n     */\r\n    static withArrayBuffer(arrayBuffer, bufferLength = 1024) {\r\n        let vizualizer = new Vizualizer();\r\n        if (typeof AudioContext !== undefined) {\r\n            vizualizer.audioContext = new AudioContext();\r\n        } else if (typeof webkitAudioContext !== undefined) {\r\n            vizualizer.audioContext = new webkitAudioContext();\r\n        } else {\r\n            throw new Error(\"AudioContext is not supported\");\r\n        }\r\n        \r\n        vizualizer.audioAnalyser = vizualizer.audioContext.createAnalyser();\r\n        vizualizer.audioContext.decodeAudioData(buffer => {\r\n            vizualizer.audioSource = vizualizer.audioContext.createBufferSource();\r\n            vizualizer.audioSource.connect(vizualizer.audioAnalyser);\r\n            vizualizer.audioSource.connect(vizualizer.audioContext.destination);\r\n            vizualizer.audioSource.buffer = buffer;\r\n        });\r\n        vizualizer.dataArray = new Uint8Array(bufferLength);\r\n        vizualizer.effects = [];\r\n        vizualizer.initializeVisibilityEvent();\r\n        \r\n        return vizualizer;\r\n    }\r\n    \r\n    /**\r\n     * Start the visualisation\r\n     */\r\n    start() {\r\n        this.requestId = requestAnimationFrame(this.startRender.bind(this));\r\n    }\r\n    \r\n    /**\r\n     * Stop the visualisation\r\n     */\r\n    stop() {\r\n        cancelAnimationFrame(this.requestId);\r\n    }\r\n    \r\n    /**\r\n     * Render every effect in the array effects\r\n     */\r\n    startRender() {\r\n        var i = 0;\r\n        this.audioAnalyser.getByteFrequencyData(this.dataArray);\r\n        for (i; i < this.effects.length; i += 1) {\r\n            this.effects[i].renderEffect(this.dataArray);\r\n        }\r\n        requestAnimationFrame(this.startRender.bind(this));\r\n    }\r\n    \r\n    /**\r\n     * Change the effect of the vizualizer\r\n     * @param {EffectVizualizer} effectVizualizer Effect\r\n     * @param {number} [i=0]   Index of the effect to change \r\n     */\r\n    changeEffect(effectVizualizer, i = 0) {\r\n        if (this.effects[i] !== undefined) {\r\n            this.effects[i].hide();\r\n            this.effects[i] = effectVizualizer;\r\n            this.effects[i].show();\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Add an effect at the end of the array\r\n     * @param {EffectVizualizer} effect Effect to add\r\n     */\r\n    addEffect(effect) {\r\n        this.effects.push(effect);\r\n        this.effects[this.effects.length - 1].show();\r\n    }\r\n    \r\n    /**\r\n     * Remove the last effect added\r\n     */\r\n    popEffect() {\r\n        this.effects[this.effects.length - 1].hide();\r\n        this.effects.pop();\r\n    }\r\n    \r\n    /**\r\n     * Remove the effect specified by the index\r\n     * @param {number} index Index of the element that should be remove from the effects array\r\n     */\r\n    removeEffect(index) {\r\n        this.effects[index].hide();\r\n        this.effects.splice(index, 1);\r\n    }\r\n    \r\n    /**\r\n     * Change the audio context\r\n     * @param {AudioContext} context AudioContext\r\n     */\r\n    loadAudioContext(context) {\r\n        this.audioContext = context;\r\n        this.audioAnalyser = this.audioContext.createAnalyser();\r\n        this.dataArray = new Uint8Array(this.dataArray.length);\r\n        this.audioAnalyser.getByteFrequencyData(this.dataArray);\r\n    }\r\n    \r\n    /**\r\n     * Change the audio element\r\n     * @param {Element} element Element\r\n     */\r\n    loadElement(element) {\r\n        this.audioElement = element;\r\n        this.audioSource = this.audioContext.createMediaElementSource(this.audioElement);\r\n        this.audioSource.connect(this.audioAnalyser);\r\n        this.audioSource.connect(this.audioContext.destination);\r\n    }\r\n    \r\n    /**\r\n     * Load the vizualizer with the specified array buffer\r\n     * @param {ArrayBuffer} arraybuffer Array buffer to load\r\n     */\r\n    loadArrayBuffer(arraybuffer) {\r\n        this.audioContext.decodeAudioData(buffer => {\r\n            this.audioSource = this.audioContext.createBufferSource();\r\n            this.audioSource.connect(this.audioAnalyser);\r\n            this.audioSource.connect(this.audioContext.destination);\r\n            this.audioSource.buffer = buffer;\r\n        });\r\n    }\r\n    \r\n    /**\r\n     * Load the vizualizer with the specified data url\r\n     * @param {string} dataUrl Url of the data\r\n     */\r\n    loadDataUrl(dataUrl) {\r\n        if (this.audioElement === null || this.audioElement === undefined) {\r\n            this.audioElement = new Audio();\r\n            this.audioElement.crossOrigin = \"anonymous\";\r\n        }\r\n        this.audioElement.src = dataUrl;\r\n    }\r\n    \r\n    /**\r\n     * Initialize the visibilty change event to stop the visualisation when the page is not visible.\r\n     */\r\n    initializeVisibilityEvent() {\r\n        let hidden, visibilityChange;\r\n        if (typeof document.hidden !== \"undefined\") { // Opera 12.10 and Firefox 18 and later support \r\n            hidden = \"hidden\";\r\n            visibilityChange = \"visibilitychange\";\r\n        } else if (typeof document.mozHidden !== \"undefined\") {\r\n            hidden = \"mozHidden\";\r\n            visibilityChange = \"mozvisibilitychange\";\r\n        } else if (typeof document.msHidden !== \"undefined\") {\r\n            hidden = \"msHidden\";\r\n            visibilityChange = \"msvisibilitychange\";\r\n        } else if (typeof document.webkitHidden !== \"undefined\") {\r\n            hidden = \"webkitHidden\";\r\n            visibilityChange = \"webkitvisibilitychange\";\r\n        }\r\n\r\n        if (typeof document[hidden] != \"undefined\") {\r\n            document.addEventListener(visibilityChange,\r\n                e => {\r\n                    if (document[hidden]) {\r\n                        this.stop();\r\n                    } else {\r\n                        this.start();\r\n                    }\r\n                }, false);\r\n        }\r\n\r\n    }\r\n        \r\n}"
   },
   {
     "__docId__": 7,
@@ -358,7 +358,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer.withElement",
     "access": null,
     "description": "Create a new Vizualizer with the specified audio element",
-    "lineNumber": 80,
+    "lineNumber": 81,
     "unknown": [
       {
         "tagName": "@returns",
@@ -417,7 +417,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer.withContextSource",
     "access": null,
     "description": "Create a new Vizualizer with the specified audio context and source",
-    "lineNumber": 109,
+    "lineNumber": 111,
     "unknown": [
       {
         "tagName": "@returns",
@@ -478,7 +478,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer.withArrayBuffer",
     "access": null,
     "description": "Create a new Vizualizer with the specified array buffer",
-    "lineNumber": 130,
+    "lineNumber": 133,
     "unknown": [
       {
         "tagName": "@returns",
@@ -537,7 +537,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#start",
     "access": null,
     "description": "Start the visualisation",
-    "lineNumber": 154,
+    "lineNumber": 160,
     "params": [],
     "generator": false
   },
@@ -551,7 +551,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#requestId",
     "access": null,
     "description": null,
-    "lineNumber": 155,
+    "lineNumber": 161,
     "undocument": true,
     "type": {
       "types": [
@@ -569,7 +569,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#stop",
     "access": null,
     "description": "Stop the visualisation",
-    "lineNumber": 161,
+    "lineNumber": 167,
     "params": [],
     "generator": false
   },
@@ -583,7 +583,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#startRender",
     "access": null,
     "description": "Render every effect in the array effects",
-    "lineNumber": 168,
+    "lineNumber": 174,
     "params": [],
     "generator": false
   },
@@ -597,7 +597,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#changeEffect",
     "access": null,
     "description": "Change the effect of the vizualizer",
-    "lineNumber": 182,
+    "lineNumber": 188,
     "params": [
       {
         "nullable": null,
@@ -634,7 +634,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#addEffect",
     "access": null,
     "description": "Add an effect at the end of the array",
-    "lineNumber": 194,
+    "lineNumber": 200,
     "params": [
       {
         "nullable": null,
@@ -659,7 +659,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#popEffect",
     "access": null,
     "description": "Remove the last effect added",
-    "lineNumber": 202,
+    "lineNumber": 208,
     "params": [],
     "generator": false
   },
@@ -673,7 +673,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#removeEffect",
     "access": null,
     "description": "Remove the effect specified by the index",
-    "lineNumber": 211,
+    "lineNumber": 217,
     "params": [
       {
         "nullable": null,
@@ -698,7 +698,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#loadAudioContext",
     "access": null,
     "description": "Change the audio context",
-    "lineNumber": 220,
+    "lineNumber": 226,
     "params": [
       {
         "nullable": null,
@@ -723,7 +723,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#audioContext",
     "access": null,
     "description": null,
-    "lineNumber": 221,
+    "lineNumber": 227,
     "undocument": true,
     "type": {
       "types": [
@@ -741,7 +741,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#audioAnalyser",
     "access": null,
     "description": null,
-    "lineNumber": 222,
+    "lineNumber": 228,
     "undocument": true,
     "type": {
       "types": [
@@ -759,7 +759,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#dataArray",
     "access": null,
     "description": null,
-    "lineNumber": 223,
+    "lineNumber": 229,
     "undocument": true,
     "type": {
       "types": [
@@ -777,7 +777,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#loadElement",
     "access": null,
     "description": "Change the audio element",
-    "lineNumber": 231,
+    "lineNumber": 237,
     "params": [
       {
         "nullable": null,
@@ -802,7 +802,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#audioElement",
     "access": null,
     "description": null,
-    "lineNumber": 232,
+    "lineNumber": 238,
     "undocument": true,
     "type": {
       "types": [
@@ -820,7 +820,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#audioSource",
     "access": null,
     "description": null,
-    "lineNumber": 233,
+    "lineNumber": 239,
     "undocument": true,
     "type": {
       "types": [
@@ -838,7 +838,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#loadArrayBuffer",
     "access": null,
     "description": "Load the vizualizer with the specified array buffer",
-    "lineNumber": 242,
+    "lineNumber": 248,
     "params": [
       {
         "nullable": null,
@@ -863,7 +863,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#audioSource",
     "access": null,
     "description": null,
-    "lineNumber": 244,
+    "lineNumber": 250,
     "undocument": true,
     "type": {
       "types": [
@@ -881,7 +881,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#loadDataUrl",
     "access": null,
     "description": "Load the vizualizer with the specified data url",
-    "lineNumber": 255,
+    "lineNumber": 261,
     "params": [
       {
         "nullable": null,
@@ -906,7 +906,7 @@
     "longname": "src/vizualizer.es6.js~Vizualizer#audioElement",
     "access": null,
     "description": null,
-    "lineNumber": 257,
+    "lineNumber": 263,
     "undocument": true,
     "type": {
       "types": [
@@ -915,7 +915,21 @@
     }
   },
   {
-    "__docId__": 40,
+    "__docId__": 39,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "initializeVisibilityEvent",
+    "memberof": "src/vizualizer.es6.js~Vizualizer",
+    "longname": "src/vizualizer.es6.js~Vizualizer#initializeVisibilityEvent",
+    "access": null,
+    "description": "Initialize the visibilty change event to stop the visualisation when the page is not visible.",
+    "lineNumber": 272,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 41,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -928,7 +942,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 41,
+    "__docId__": 42,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -941,7 +955,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 42,
+    "__docId__": 43,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -954,7 +968,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 43,
+    "__docId__": 44,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -967,7 +981,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 44,
+    "__docId__": 45,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -980,7 +994,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 45,
+    "__docId__": 46,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -993,7 +1007,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 46,
+    "__docId__": 47,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1006,7 +1020,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 47,
+    "__docId__": 48,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1019,7 +1033,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 48,
+    "__docId__": 49,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1032,7 +1046,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 49,
+    "__docId__": 50,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1045,7 +1059,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 50,
+    "__docId__": 51,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1058,7 +1072,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 51,
+    "__docId__": 52,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1071,7 +1085,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 52,
+    "__docId__": 53,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1084,7 +1098,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 53,
+    "__docId__": 54,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1097,7 +1111,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 54,
+    "__docId__": 55,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1110,7 +1124,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 55,
+    "__docId__": 56,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1123,7 +1137,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 56,
+    "__docId__": 57,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1136,7 +1150,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 57,
+    "__docId__": 58,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1149,7 +1163,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 58,
+    "__docId__": 59,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1162,7 +1176,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 59,
+    "__docId__": 60,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1175,7 +1189,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 60,
+    "__docId__": 61,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1188,7 +1202,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 61,
+    "__docId__": 62,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1201,7 +1215,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 62,
+    "__docId__": 63,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1214,7 +1228,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 63,
+    "__docId__": 64,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1227,7 +1241,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 64,
+    "__docId__": 65,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1240,7 +1254,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 65,
+    "__docId__": 66,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1253,7 +1267,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 66,
+    "__docId__": 67,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1266,7 +1280,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 67,
+    "__docId__": 68,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1279,7 +1293,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 68,
+    "__docId__": 69,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1292,7 +1306,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 69,
+    "__docId__": 70,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1305,7 +1319,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 70,
+    "__docId__": 71,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1318,7 +1332,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 71,
+    "__docId__": 72,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1331,7 +1345,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 72,
+    "__docId__": 73,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1344,7 +1358,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 73,
+    "__docId__": 74,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1357,7 +1371,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 74,
+    "__docId__": 75,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1370,7 +1384,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 75,
+    "__docId__": 76,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1383,7 +1397,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 76,
+    "__docId__": 77,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1396,7 +1410,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 77,
+    "__docId__": 78,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1409,7 +1423,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 78,
+    "__docId__": 79,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1422,7 +1436,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 79,
+    "__docId__": 80,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1435,7 +1449,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 80,
+    "__docId__": 81,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1448,7 +1462,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 81,
+    "__docId__": 82,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1461,7 +1475,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 82,
+    "__docId__": 83,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1474,7 +1488,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 83,
+    "__docId__": 84,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1487,7 +1501,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 84,
+    "__docId__": 85,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1500,7 +1514,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 85,
+    "__docId__": 86,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1513,7 +1527,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 86,
+    "__docId__": 87,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1526,7 +1540,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 88,
+    "__docId__": 89,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1539,7 +1553,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 89,
+    "__docId__": 90,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1552,7 +1566,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 90,
+    "__docId__": 91,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1565,7 +1579,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 91,
+    "__docId__": 92,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1578,7 +1592,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 92,
+    "__docId__": 93,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1591,7 +1605,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 93,
+    "__docId__": 94,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1604,7 +1618,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 94,
+    "__docId__": 95,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1617,7 +1631,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 95,
+    "__docId__": 96,
     "kind": "external",
     "static": true,
     "variation": null,
