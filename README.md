@@ -4,11 +4,11 @@ Vizualizer.js is a small javascript library to simplify the creation of audio vi
 
 ## Documentation
 
-Documentation available [here](#http://ffloriel.github.io/Vizualizer/documentation/).
+Documentation available [here](http://ffloriel.github.io/Vizualizer/documentation/).
 
 ## Demo
 
-You can found a demo of the vizualizer [here](#http://ffloriel.github.io/Vizualizer/demo/).
+You can found a demo of the vizualizer [here](http://ffloriel.github.io/Vizualizer/demo/).
 
 ## Usage
 
