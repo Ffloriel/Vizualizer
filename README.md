@@ -1,14 +1,14 @@
 # Vizualizer.js
 
-Vizualizer.js is a small javascript library to simplify the creation of audio visualisation in the web browser. It uses the Web Audio API.
+Vizualizer.js is a small javascript library to simplify the creation of audio visualisation in the web browser. It uses the Web Audio API and Page Visibility API. The visualisaton is not rendered if the page is not visible.
 
 ## Documentation
 
-Documentation available [here](#).
+Documentation available [here](#http://ffloriel.github.io/Vizualizer/documentation/).
 
 ## Demo
 
-You can found a demo of the vizualizer [here](#).
+You can found a demo of the vizualizer [here](#http://ffloriel.github.io/Vizualizer/demo/).
 
 ## Usage
 
@@ -20,19 +20,43 @@ You can found a demo of the vizualizer [here](#).
 ```javascript
 //With Element
 var el = document.getElementById("audio");
-var vizualizerElement = Vizualizer.withElement(el, 1024);
+var vizualizerElement = Vizualizer.withElement(el);
 
 //With an url to the media (an audio element is created)
 var url = "audio.mp3";
-var vizualizerMedia = Vizualizer.withMedia(url, 1024);
+var vizualizerMedia = Vizualizer.withMedia(url);
 ```
-TODO: ArrayBuffer & context
+```javascript
+//With Array Buffer from FileReader API
+loadAudio(files) {
+        var file = files[0];
+        var audioType = /^audio\//;
+        if (audioType.test(file.type)) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                vizualizer = Vizualizer.withArrayBuffer(e.target.result);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    }
+```
 
 ### Add, remove and change an effect
-
+```javascript
+var vizualizer = vizualizer = Vizualizer.withElement(el);
+var effect = new CirclesEffect(5, 75, 0.4);
+var otherEffect = new CirclesEffect(3, 100, 0.5);
+//Add the effect
+vizualizer.addEffect(effect);   //Add effect in an array
+//change Effect
+vizualizer.changeEffect(otherEffect, 0);    //First Effect add -> index 0
+//Remove the effect
+vizualizer.removeEffect(0);
+vizualizer.stop();
+```
 ### Start and Stop the visualisation
 ```javascript
-var vizualizer = vizualizer = Vizualizer.withElement(el, 1024);
+var vizualizer = vizualizer = Vizualizer.withElement(el);
 vizualizer.start();
 vizualizer.stop();
 ```

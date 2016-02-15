@@ -39,11 +39,11 @@
 </nav>
 
 <div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="vizualizer-js">Vizualizer.js</h1>
-<p>Vizualizer.js is a small javascript library to simplify the creation of audio visualisation in the web browser. It uses the Web Audio API.</p>
+<p>Vizualizer.js is a small javascript library to simplify the creation of audio visualisation in the web browser. It uses the Web Audio API and Page Visibility API. The visualisaton is not rendered if the page is not visible.</p>
 <h2 id="documentation">Documentation</h2>
-<p>Documentation available <a href="#">here</a>.</p>
+<p>Documentation available <a href="#http://ffloriel.github.io/Vizualizer/documentation/">here</a>.</p>
 <h2 id="demo">Demo</h2>
-<p>You can found a demo of the vizualizer <a href="#">here</a>.</p>
+<p>You can found a demo of the vizualizer <a href="#http://ffloriel.github.io/Vizualizer/demo/">here</a>.</p>
 <h2 id="usage">Usage</h2>
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;audio src=&quot;audio.mp3&quot; id=&quot;audio&quot; controls&gt;&lt;/audio&gt;
 &lt;script src=&quot;vizualizer.min.js&quot;&gt;&lt;/script&gt;</code>
@@ -51,16 +51,39 @@
 <h3 id="create-a-vizualizer">Create a vizualizer</h3>
 <pre><code class="lang-javascript"><code class="source-code prettyprint">//With Element
 var el = document.getElementById(&quot;audio&quot;);
-var vizualizerElement = Vizualizer.withElement(el, 1024);
+var vizualizerElement = Vizualizer.withElement(el);
 
 //With an url to the media (an audio element is created)
 var url = &quot;audio.mp3&quot;;
-var vizualizerMedia = Vizualizer.withMedia(url, 1024);</code>
+var vizualizerMedia = Vizualizer.withMedia(url);</code>
 </code></pre>
-<p>TODO: ArrayBuffer &amp; context</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">//With Array Buffer from FileReader API
+loadAudio(files) {
+        var file = files[0];
+        var audioType = /^audio\//;
+        if (audioType.test(file.type)) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                vizualizer = Vizualizer.withArrayBuffer(e.target.result);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    }</code>
+</code></pre>
 <h3 id="add-remove-and-change-an-effect">Add, remove and change an effect</h3>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">var vizualizer = vizualizer = Vizualizer.withElement(el);
+var effect = new CirclesEffect(5, 75, 0.4);
+var otherEffect = new CirclesEffect(3, 100, 0.5);
+//Add the effect
+vizualizer.addEffect(effect);   //Add effect in an array
+//change Effect
+vizualizer.changeEffect(otherEffect, 0);    //First Effect add -&gt; index 0
+//Remove the effect
+vizualizer.removeEffect(0);
+vizualizer.stop();</code>
+</code></pre>
 <h3 id="start-and-stop-the-visualisation">Start and Stop the visualisation</h3>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">var vizualizer = vizualizer = Vizualizer.withElement(el, 1024);
+<pre><code class="lang-javascript"><code class="source-code prettyprint">var vizualizer = vizualizer = Vizualizer.withElement(el);
 vizualizer.start();
 vizualizer.stop();</code>
 </code></pre>
